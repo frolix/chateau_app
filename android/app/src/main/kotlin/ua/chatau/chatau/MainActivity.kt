@@ -1,0 +1,5 @@
+package ua.chatau.chatau
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
