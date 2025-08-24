@@ -1,10 +1,17 @@
+import 'package:chatau/core/di/bootstrap.dart';
+import 'package:chatau/core/di/bootstrap_facts.dart';
+import 'package:chatau/core/di/di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:chatau/l10n/app_localizations.dart'; // згенерований файл (synthetic-package: false)
 import 'app_router.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await setupDI();
+  await bootstrapPlacesIfEmpty(); //додаємо місця, якщо порожньо
+  await factsBootstrap(); // додаємо факти, якщо порожньо
+
   runApp(const ChatauApp());
 }
 
@@ -15,7 +22,7 @@ class ChatauApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'chatau',
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(useMaterial3: true, fontFamily: 'Montserrat'),
       routerConfig: appRouter,
 
       // 🔽 локалізація
@@ -26,7 +33,6 @@ class ChatauApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      // locale: const Locale('uk'), // ← розкоментуй, щоб примусово увімкнути укр.
     );
   }
 }

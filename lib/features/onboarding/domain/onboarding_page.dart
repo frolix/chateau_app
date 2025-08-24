@@ -1,8 +1,10 @@
+import 'package:chatau/app_router.dart';
 import 'package:chatau/features/onboarding/domain/widgets/favorite_place_card.dart';
 import 'package:chatau/features/onboarding/domain/widgets/popular_places_grid.dart';
 import 'package:chatau/features/onboarding/domain/widgets/bottom_hero_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // імпорт згенерованих локалізацій (synthetic-package: false)
 import 'package:chatau/l10n/app_localizations.dart';
@@ -32,7 +34,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
     'assets/images/places/chateau_margaux.png',
   ];
 
-  void _next() {
+  Future<void> _completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_complete', true);
+
+    // дуже важливо: оновлюємо in-memory стан для глобального redirect
+    OnboardingState.seen = true; // це викличе routerRefresh.refresh()
+  }
+
+  void _next() async {
     final slides = _buildSlides(context);
     if (_index < slides.length - 1) {
       _controller.nextPage(
@@ -40,6 +50,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
         curve: Curves.easeOutCubic,
       );
     } else {
+      // останній слайд: зберігаємо прапорець і йдемо на home
+      await _completeOnboarding();
+      if (!mounted) return;
       context.go('/home');
     }
   }
@@ -94,11 +107,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
             delay: const Duration(milliseconds: 120),
           ),
 
-          // Контент: PageView (зверху) + нижній блок керування
+          // Контент
           SafeArea(
             child: Column(
               children: [
-                // верхня область
                 Expanded(
                   child: PageView.builder(
                     controller: _controller,
@@ -111,7 +123,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Заголовок + опис
                             Text(
                               slide.title,
                               style: Theme.of(
@@ -207,7 +218,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         child: Text(
                           _index == slides.length - 1
                               ? t.btnStart
-                              : t.btnContinue, // або t.btnNiceToMeetYou
+                              : t.btnContinue,
                         ),
                       ),
                     ],

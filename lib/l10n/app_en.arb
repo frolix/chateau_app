@@ -1,14 +1,13 @@
 {
   "@@locale": "en",
   "onb1Title": "BONJOUR!",
-  "onb1Desc": "My name is Annette, and I will be your guide on a journey through the wine regions of France. 
-We will visit the most famous wineries, picturesque villages and castles, where every drop of wine has its own story.",
+  "onb1Desc": "My name is Annette, and I will be your guide on a journey through the wine regions of France.\nWe will visit the most famous wineries, picturesque villages and castles, where every drop of wine has its own story.",
   "onb2Title": "POPULAR PLACES",
   "onb2Desc": "I have prepared for you a selection of places that are worth seeing at least once in your life: from the cozy cellars of Bordeaux to the sunny hills of Provence. In each of them you will find photos, coordinates and interesting details.",
   "onb3Title": "INTERESTING FACTS",
   "onb3Desc": "And I will also share the stories and secrets of French regions. You will learn why wine from one hill can differ from wine from the next, and how local traditions affect its taste.",
   "onb4Title": "SAVE A FAVORITE",
-  "onb4Desc": "To make sure you don't lose anything, you can save your favorite places to your personal collection. And my unique selection "Taste of the moment" will show you a new place every week that will make you fall in love with it from the first sip.",
+  "onb4Desc": "To make sure you don't lose anything, you can save your favorite places to your personal collection. And my unique selection \\\"Taste of the moment\\\" will show you a new place every week that will make you fall in love with it from the first sip.",
   "btnContinue": "Continue",
   "btnStart": "Start",
   "btnNiceToMeetYou": "Nice to meet you!"

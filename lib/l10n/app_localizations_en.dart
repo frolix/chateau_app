@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onb1Title => 'BONJOUR!';
 
   @override
-  String get onb1Desc => 'My name is Annette, and I will be your guide on a journey through the wine regions of France. We will visit the most famous wineries, picturesque villages and castles, where every drop of wine has its own story.';
+  String get onb1Desc => 'My name is Annette, and I will be your guide on a journey through the wine regions of France.\nWe will visit the most famous wineries, picturesque villages and castles, where every drop of wine has its own story.';
 
   @override
   String get onb2Title => 'POPULAR PLACES';
@@ -24,13 +24,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onb3Title => 'INTERESTING FACTS';
 
   @override
-  String get onb3Desc => 'I will also share the stories and secrets of French regions. You will learn why wine from one hill can differ from wine from the next, and how local traditions affect its taste.';
+  String get onb3Desc => 'And I will also share the stories and secrets of French regions. You will learn why wine from one hill can differ from wine from the next, and how local traditions affect its taste.';
 
   @override
   String get onb4Title => 'SAVE A FAVORITE';
 
   @override
-  String get onb4Desc => 'To make sure you don’t lose anything, you can save your favorite places to your personal collection. My unique selection “Taste of the moment” will show you a new place every week that will make you fall in love with it from the first sip.';
+  String get onb4Desc => 'To make sure you don\'t lose anything, you can save your favorite places to your personal collection. And my unique selection \\\"Taste of the moment\\\" will show you a new place every week that will make you fall in love with it from the first sip.';
 
   @override
   String get btnContinue => 'Continue';
