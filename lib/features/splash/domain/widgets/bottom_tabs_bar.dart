@@ -31,7 +31,7 @@ class BottomTabsBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.45),
+            color: Colors.black.withValues(alpha: 0.45),
             blurRadius: 24,
             offset: const Offset(0, 12),
           ),
@@ -96,7 +96,7 @@ class _AssetNavItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFFFC736).withOpacity(0.5),
+                color: const Color(0xFFFFC736).withValues(alpha: 0.5),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),

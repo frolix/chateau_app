@@ -83,7 +83,6 @@ class PlacesMapOverlay extends StatefulWidget {
 
 class _PlacesMapOverlayState extends State<PlacesMapOverlay> {
   final _map = MapController();
-  bool _mapReady = false;
   bool _didAutoFit = false;
   LatLngBounds? _lastFittedBounds;
 
@@ -182,7 +181,6 @@ class _PlacesMapOverlayState extends State<PlacesMapOverlay> {
           flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
         ),
         onMapReady: () {
-          _mapReady = true;
           if (bounds != null && !_didAutoFit) {
             _didAutoFit = true;
             _fitOnce(bounds, force: true);
@@ -326,7 +324,7 @@ class _TopPlaceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.35),
+              color: Colors.black.withValues(alpha: 0.35),
               blurRadius: 24,
               offset: const Offset(0, 12),
             ),
@@ -389,7 +387,7 @@ class _TopPlaceCard extends StatelessWidget {
                     backgroundColor: const Color(0xFFE8C24D),
                     foregroundColor: Colors.black,
                     elevation: 10,
-                    shadowColor: Colors.black.withOpacity(0.4),
+                    shadowColor: Colors.black.withValues(alpha: 0.35),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 22,
                       vertical: 16,

@@ -35,7 +35,7 @@ class _WordBox extends StatelessWidget {
             fontWeight: FontWeight.w600, // SemiBold
             fontSize: 48,
             height: 1.0,
-            color: Colors.white.withOpacity(0.02), // 2%
+            color: Colors.white.withValues(alpha: 0.02), // 2%
             letterSpacing: 0,
           ),
         ),

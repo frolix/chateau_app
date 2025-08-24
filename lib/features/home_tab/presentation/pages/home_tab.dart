@@ -93,7 +93,6 @@ class _HomeTabState extends State<HomeTab> {
     final safeTop = MediaQuery.of(context).padding.top;
     const targetTop = 32.0;
     final extraTop = (targetTop - safeTop).clamp(0.0, double.infinity);
-    final size = MediaQuery.of(context).size;
 
     // куди анімувати карту (з малого слоту у весь екран)
     final bool haveMini = _miniRectLocal != null;
@@ -211,8 +210,8 @@ class _HomeTabState extends State<HomeTab> {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                Colors.black.withOpacity(0.05),
-                                Colors.black.withOpacity(0.12),
+                                Colors.black.withValues(alpha: 0.05),
+                                Colors.black.withValues(alpha: 0.12),
                               ],
                             ),
                           ),
@@ -302,11 +301,7 @@ class _MiniMapSlot extends StatelessWidget {
 }
 
 class _ExpandCollapseFab extends StatelessWidget {
-  const _ExpandCollapseFab({
-    super.key,
-    required this.expanded,
-    required this.onTap,
-  });
+  const _ExpandCollapseFab({required this.expanded, required this.onTap});
   final bool expanded;
   final VoidCallback onTap;
 

@@ -5,8 +5,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:chatau/features/home_tab/presentation/widgets/guide_header_card.dart';
-
 /// Екран-запрошення з двома кнопками в картці:
 /// Share app / Rate app
 class InviteTab extends StatelessWidget {
@@ -51,7 +49,6 @@ class InviteTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final safeTop = MediaQuery.of(context).padding.top;
-    final bottomPad = 24 + MediaQuery.of(context).padding.bottom;
 
     return Stack(
       children: [
@@ -90,7 +87,6 @@ class _ShareRateCard extends StatelessWidget {
   final VoidCallback onRate;
 
   const _ShareRateCard({
-    super.key,
     required this.bottomInset,
     required this.onShare,
     required this.onRate,
@@ -116,12 +112,12 @@ class _ShareRateCard extends StatelessWidget {
           border: Border.all(color: Colors.white12, width: 1),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0416CB).withOpacity(0.35),
+              color: const Color(0xFF0416CB).withValues(alpha: 0.35),
               blurRadius: 28,
               offset: const Offset(0, 18),
             ),
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
+              color: Colors.black.withValues(alpha: 0.25),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
@@ -166,12 +162,7 @@ class _YellowCTA extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
-  const _YellowCTA({
-    super.key,
-    required this.label,
-    this.onPressed,
-    this.onLongPress,
-  });
+  const _YellowCTA({required this.label, this.onPressed, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +175,7 @@ class _YellowCTA extends StatelessWidget {
         backgroundColor: const Color(0xFFF0C74B),
         foregroundColor: Colors.black87,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        shadowColor: Colors.black.withOpacity(0.35),
+        shadowColor: Colors.black.withValues(alpha: 0.35),
       ),
       child: Text(
         label,

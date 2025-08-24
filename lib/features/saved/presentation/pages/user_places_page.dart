@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:chatau/core/di/di.dart';
-import 'package:chatau/features/home_tab/presentation/widgets/guide_header_card.dart';
 import 'package:chatau/features/places/presentation/widgets/place_card.dart';
 import 'package:chatau/features/places/presentation/pages/place_details_page.dart';
 import 'package:chatau/features/places/presentation/pages/places_map_page.dart';

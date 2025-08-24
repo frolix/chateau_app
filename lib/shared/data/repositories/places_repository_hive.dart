@@ -9,8 +9,8 @@ import '../../domain/repositories/places_repository.dart';
 import '../mappers/place_mapper.dart';
 
 /// Імплементація репозиторію на Hive:
-/// - Box<PlaceEntity> зберігає “каталог/довідник” місць
-/// - Box<UserPlaceState> зберігає локальний стан користувача (в обраних, мій рейтинг)
+// - Box<PlaceEntity> зберігає “каталог/довідник” місць
+// - Box<UserPlaceState> зберігає локальний стан користувача (в обраних, мій рейтинг)
 class PlacesRepositoryHive implements PlacesRepository {
   final Box<PlaceEntity> _placesBox;
   final Box<UserPlaceState> _stateBox;

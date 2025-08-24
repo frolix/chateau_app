@@ -21,7 +21,9 @@ class PopularPlacesGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     // Гарантуємо ≥ 4 елементи, інакше доб’ємо пустими
     final pool = List<String>.from(assets);
-    while (pool.length < 4) pool.add('');
+    while (pool.length < 4) {
+      pool.add('');
+    }
     pool.shuffle(Random());
     final pics = pool.take(4).toList();
 
@@ -173,7 +175,7 @@ class _AnimatedTileState extends State<_AnimatedTile>
                 fit: BoxFit.cover,
                 errorBuilder:
                     (_, __, ___) => Container(
-                      color: Colors.red.withOpacity(.25),
+                      color: Colors.red.withValues(alpha: .35),
                       alignment: Alignment.center,
                       child: const Icon(Icons.broken_image, color: Colors.red),
                     ),

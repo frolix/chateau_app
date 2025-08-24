@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:chatau/core/di/di.dart';
-import 'package:chatau/features/home_tab/presentation/widgets/guide_header_card.dart';
 import 'package:chatau/shared/domain/models/fact.dart';
 import 'package:chatau/shared/domain/repositories/facts_repository.dart';
 
@@ -51,8 +50,6 @@ class _FactsTabState extends State<FactsTab> with TickerProviderStateMixin {
 
     return Stack(
       children: [
-        // твій фон/градієнт/фото, якщо є
-        // const _Background(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -148,12 +145,12 @@ class _FactCard extends StatelessWidget {
             border: Border.all(color: Colors.white12, width: 1),
             boxShadow: [
               BoxShadow(
-                color: Color(0xFF0416CB).withOpacity(0.35),
+                color: Color(0xFF0416CB).withValues(alpha: 0.35),
                 blurRadius: 28,
                 offset: Offset(0, 18),
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.25),
+                color: Colors.black.withValues(alpha: 0.25),
                 blurRadius: 16,
                 offset: Offset(0, 8),
               ),
@@ -185,7 +182,7 @@ class _FactCard extends StatelessWidget {
                     fact.text,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white.withOpacity(0.92),
+                      color: Colors.white..withValues(alpha: 0.92),
                       height: 1.35,
                       fontWeight: FontWeight.w600,
                     ),
@@ -231,12 +228,7 @@ class _YellowCTA extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
-  const _YellowCTA({
-    super.key,
-    required this.label,
-    this.onPressed,
-    this.onLongPress,
-  });
+  const _YellowCTA({required this.label, this.onPressed, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +241,7 @@ class _YellowCTA extends StatelessWidget {
         backgroundColor: const Color(0xFFF0C74B),
         foregroundColor: Colors.black87,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        shadowColor: Colors.black.withOpacity(0.35),
+        shadowColor: Colors.black.withValues(alpha: 0.35),
       ),
       child: Text(
         label,
@@ -296,39 +288,6 @@ class _PrimaryButton extends StatelessWidget {
         return true;
       },
       child: btn,
-    );
-  }
-}
-
-/// Сіра вторинна кнопка
-class _SecondaryButton extends StatelessWidget {
-  final String label;
-  final VoidCallback? onPressed;
-  final VoidCallback? onLongPress;
-  const _SecondaryButton({
-    required this.label,
-    this.onPressed,
-    this.onLongPress,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      onLongPress: onLongPress,
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-        side: BorderSide(color: Colors.white.withOpacity(0.6), width: 1.4),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-      ),
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
     );
   }
 }

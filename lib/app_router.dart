@@ -1,5 +1,5 @@
-import 'package:chatau/features/onboarding/domain/onboarding_page.dart';
-import 'package:chatau/features/splash/domain/splash.dart';
+import 'package:chatau/features/onboarding/presentation/onboarding_page.dart';
+import 'package:chatau/features/splash/presentation/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

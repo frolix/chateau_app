@@ -52,7 +52,7 @@ class _CardState extends State<_Card> with SingleTickerProviderStateMixin {
           borderRadius: BorderRadius.circular(radius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.35),
+              color: Colors.black.withValues(alpha: 0.35),
               blurRadius: 24,
               offset: const Offset(0, 12),
             ),

@@ -2,7 +2,6 @@ import 'package:chatau/features/places/presentation/pages/places_map_page.dart';
 import 'package:chatau/features/places/presentation/widgets/guide_place_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:chatau/features/home_tab/presentation/widgets/guide_header_card.dart';
 import 'package:chatau/features/places/presentation/widgets/place_card.dart';
 import 'package:chatau/shared/domain/models/place.dart';
 import 'package:chatau/shared/domain/repositories/places_repository.dart';

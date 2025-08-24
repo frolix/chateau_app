@@ -120,54 +120,83 @@ class DetailsCard extends StatelessWidget {
                         children: [
                           TabBar(
                             isScrollable: true,
-                            labelColor: Colors.white,
-                            unselectedLabelColor: Colors.white70,
-                            dividerColor: Colors.transparent,
+                            tabAlignment: TabAlignment.start,
+
+                            // ⬇️ ключові зміни
+                            indicatorSize:
+                                TabBarIndicatorSize
+                                    .label, // підкреслення по ширині тексту
                             indicator: const UnderlineTabIndicator(
                               borderSide: BorderSide(
                                 color: Colors.white,
                                 width: 2,
                               ),
-                              insets: EdgeInsets.only(right: 12, bottom: 4),
                             ),
+
+                            // щоб не було «зайвого» простору навколо тексту
+                            labelPadding: EdgeInsets.zero,
+
+                            labelColor: Colors.white,
+                            unselectedLabelColor: Colors.white70,
+                            dividerColor: Colors.transparent,
                             labelStyle: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
+
                             tabs: const [
-                              Tab(text: 'Description'),
-                              Tab(text: 'Interesting fact'),
+                              Tab(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text('Description'),
+                                ),
+                              ),
+                              Tab(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  child: Text('Interesting fact'),
+                                ),
+                              ),
                             ],
                           ),
+
                           const SizedBox(height: 10),
                           Expanded(
                             child: TabBarView(
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
+                                // Description
                                 ClipRect(
                                   child: Align(
                                     alignment: Alignment.topLeft,
-                                    child: Text(
-                                      place.description,
-                                      softWrap: true,
-                                      overflow: TextOverflow.fade,
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        height: 1.35,
+                                    child: SingleChildScrollView(
+                                      // 👈 додали
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Text(
+                                        place.description,
+                                        softWrap: true,
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          height: 1.35,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
+                                // Interesting fact
                                 ClipRect(
                                   child: Align(
                                     alignment: Alignment.topLeft,
-                                    child: Text(
-                                      place.fact ?? '',
-                                      softWrap: true,
-                                      overflow: TextOverflow.fade,
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        height: 1.35,
+                                    child: SingleChildScrollView(
+                                      // 👈 додали
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Text(
+                                        place.fact ?? '',
+                                        softWrap: true,
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          height: 1.35,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -260,11 +289,11 @@ class _YellowPrimaryButton extends StatelessWidget {
               color: const Color(0xFFE0BC46),
               borderRadius: BorderRadius.circular(radius),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.35),
-                  blurRadius: 24,
-                  offset: const Offset(0, 12),
-                ),
+                // BoxShadow(
+                //   color: Colors.black.withValues(alpha: 0.35),
+                //   blurRadius: 24,
+                //   offset: const Offset(0, 12),
+                // ),
               ],
             ),
             child: Center(
@@ -316,49 +345,14 @@ class _YellowIconButton extends StatelessWidget {
                     : const Color(0xFFE0BC46), // інакше жовта
             borderRadius: BorderRadius.circular(radius),
             boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.44),
-                blurRadius: 16,
-                offset: const Offset(0, 7),
-              ),
+              // BoxShadow(
+              //   color: Colors.black.withValues(alpha: 0.44),
+              //   blurRadius: 16,
+              //   offset: const Offset(0, 7),
+              // ),
             ],
           ),
           child: Center(child: Icon(icon, color: Colors.black87, size: 22)),
-        ),
-      ),
-    );
-  }
-}
-
-class _YellowActionButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onTap;
-  const _YellowActionButton({required this.icon, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFE0BC46),
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.35),
-            blurRadius: 18,
-            offset: const Offset(0, 7),
-          ),
-        ],
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(22),
-        onTap: onTap,
-        child: const Padding(
-          padding: EdgeInsets.all(14),
-          child: Icon(
-            Icons.circle, // це значення замінюється через IconTheme нижче
-            color: Colors.transparent,
-            size: 0,
-          ),
         ),
       ),
     );

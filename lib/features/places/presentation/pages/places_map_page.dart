@@ -21,7 +21,6 @@ class PlacesMapPage extends StatefulWidget {
 
 class _PlacesMapPageState extends State<PlacesMapPage> {
   final _map = MapController();
-  bool _mapReady = false;
   LatLngBounds? _lastFittedBounds;
 
   static const double _frameRadius = 22;
@@ -69,7 +68,6 @@ class _PlacesMapPageState extends State<PlacesMapPage> {
                               ? 14
                               : (bounds != null ? 8 : fallbackZoom),
                       onMapReady: () {
-                        setState(() => _mapReady = true);
                         if (initialPoint != null) {
                           _map.move(initialPoint, 14);
                         } else if (bounds != null) {
@@ -159,7 +157,7 @@ class _PlacesMapPageState extends State<PlacesMapPage> {
         borderRadius: BorderRadius.circular(_frameRadius),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2E46FF).withOpacity(0.35),
+            color: const Color(0xFF2E46FF).withValues(alpha: 0.35),
             blurRadius: 24,
             offset: const Offset(0, 12),
           ),
@@ -201,8 +199,9 @@ class _PlacesMapPageState extends State<PlacesMapPage> {
   void _fitOnce(LatLngBounds bounds) {
     if (_lastFittedBounds != null &&
         _lastFittedBounds!.southWest == bounds.southWest &&
-        _lastFittedBounds!.northEast == bounds.northEast)
+        _lastFittedBounds!.northEast == bounds.northEast) {
       return;
+    }
     _lastFittedBounds = bounds;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _map.fitCamera(
@@ -232,7 +231,7 @@ class _CloseMapButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.35),
+                color: Colors.black.withValues(alpha: 0.35),
                 blurRadius: 18,
                 offset: const Offset(0, 10),
               ),

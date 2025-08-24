@@ -1,6 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 
+// ⬇️ додай
+import 'package:chatau/features/onboarding/domain/onboarding_state.dart';
+
 import '../db/hive_init.dart';
 import '../db/boxes.dart';
 import '../db/adapters/place_entity.dart';
@@ -34,4 +37,10 @@ Future<void> setupDI() async {
       () => FactsRepositoryHive(factsBox: factsBox),
     );
   }
+
+  // ⬇️ OnboardingState: реєструємо і одразу відновлюємо прапорець
+  if (!sl.isRegistered<OnboardingState>()) {
+    sl.registerLazySingleton<OnboardingState>(() => OnboardingState());
+  }
+  await sl<OnboardingState>().restore();
 }

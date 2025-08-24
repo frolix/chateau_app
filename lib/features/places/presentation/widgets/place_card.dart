@@ -43,7 +43,7 @@ class PlaceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.35),
+              color: Colors.black.withValues(alpha: 0.35),
               blurRadius: 24,
               offset: const Offset(0, 12),
             ),
@@ -132,7 +132,7 @@ class PlaceCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      _RatingRow(value: place.rating ?? 0),
+                      _RatingRow(value: place.rating),
                     ],
                   ),
                 ),
@@ -145,7 +145,7 @@ class PlaceCard extends StatelessWidget {
                     backgroundColor: const Color(0xFFE8C24D),
                     foregroundColor: Colors.black,
                     elevation: 10,
-                    shadowColor: Colors.black.withOpacity(0.4),
+                    shadowColor: Colors.black..withValues(alpha: 0.4),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 22,
                       vertical: 16,
