@@ -167,11 +167,11 @@ class _PlacesMapOverlayState extends State<PlacesMapOverlay> {
     double fallbackZoom,
   ) {
     return FlutterMap(
-      key: ValueKey(
-        bounds == null
-            ? 'no-bounds'
-            : '${bounds.southWest}-${bounds.northEast}',
-      ),
+      // key: ValueKey(
+      //   bounds == null
+      //       ? 'no-bounds'
+      //       : '${bounds.southWest}-${bounds.northEast}',
+      // ),
       mapController: _map,
       options: MapOptions(
         backgroundColor: const Color(0xFF0E1330),
