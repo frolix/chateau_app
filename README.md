@@ -1,16 +1,5 @@
 # chatau
 
-A new Flutter project.
+## Description
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Embark on an exquisite journey through the wine regions of France with Annetta, your personal guide. Château Tran and Chant Moments will introduce you to the best wineries, castles and picturesque locations where wine becomes art. Explore popular places with photos, descriptions and coordinates, learn interesting facts about the regions and save your favorite locations to your collection. An interactive map and a unique selection of “Taste of the Moment” will help you find inspiration for your next trip.
