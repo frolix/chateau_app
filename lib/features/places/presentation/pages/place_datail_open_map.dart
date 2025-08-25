@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:chatau/core/di/di.dart';
 import 'package:chatau/shared/domain/models/place.dart';
 import 'package:chatau/shared/domain/repositories/places_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; // 👈 додано
+import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Повноекранний екран деталей, використовує публічну картку DetailsCard.
 class DetailsFullScreenMap extends StatelessWidget {
@@ -16,10 +21,35 @@ class DetailsFullScreenMap extends StatelessWidget {
       child: DetailsCard(
         place: place,
         onToggleFavorite: () => sl<PlacesRepository>().toggleFavorite(place.id),
-        onShare: () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Share tapped')));
+        onShare: () async {
+          final text = _buildShareText(place).trim();
+          if (text.isEmpty) return;
+
+          if (Platform.isAndroid) {
+            final handled = await _shareTextAndroidCustomSheet(
+              context,
+              subject: place.name,
+              body: text,
+            );
+            if (!handled) {
+              await Clipboard.setData(ClipboardData(text: text));
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Немає доступних застосунків. Текст скопійовано.',
+                    ),
+                  ),
+                );
+              }
+            }
+          } else {
+            final subject =
+                place.name.length > 120
+                    ? place.name.substring(0, 120)
+                    : place.name;
+            await Share.share(text, subject: subject);
+          }
         },
       ),
     );
@@ -121,21 +151,14 @@ class DetailsCard extends StatelessWidget {
                           TabBar(
                             isScrollable: true,
                             tabAlignment: TabAlignment.start,
-
-                            // ⬇️ ключові зміни
-                            indicatorSize:
-                                TabBarIndicatorSize
-                                    .label, // підкреслення по ширині тексту
+                            indicatorSize: TabBarIndicatorSize.label,
                             indicator: const UnderlineTabIndicator(
                               borderSide: BorderSide(
                                 color: Colors.white,
                                 width: 2,
                               ),
                             ),
-
-                            // щоб не було «зайвого» простору навколо тексту
                             labelPadding: EdgeInsets.zero,
-
                             labelColor: Colors.white,
                             unselectedLabelColor: Colors.white70,
                             dividerColor: Colors.transparent,
@@ -143,7 +166,6 @@ class DetailsCard extends StatelessWidget {
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
-
                             tabs: const [
                               Tab(
                                 child: Padding(
@@ -159,18 +181,15 @@ class DetailsCard extends StatelessWidget {
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 10),
                           Expanded(
                             child: TabBarView(
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
-                                // Description
                                 ClipRect(
                                   child: Align(
                                     alignment: Alignment.topLeft,
                                     child: SingleChildScrollView(
-                                      // 👈 додали
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Text(
                                         place.description,
@@ -183,12 +202,10 @@ class DetailsCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                // Interesting fact
                                 ClipRect(
                                   child: Align(
                                     alignment: Alignment.topLeft,
                                     child: SingleChildScrollView(
-                                      // 👈 додали
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Text(
                                         place.fact ?? '',
@@ -228,7 +245,6 @@ class DetailsCard extends StatelessWidget {
           // ===== Кнопки дій (притиснуті до низу картки)
           Row(
             children: [
-              // велика ліва кнопка
               Expanded(
                 child: _YellowPrimaryButton(
                   label: 'Open on map',
@@ -236,10 +252,6 @@ class DetailsCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-
-              // квадратна "лайк"
-
-              // 👍 реактивна кнопка лайка
               StreamBuilder<bool>(
                 stream: sl<PlacesRepository>().watchIsSaved(place.id),
                 builder: (context, snap) {
@@ -248,14 +260,11 @@ class DetailsCard extends StatelessWidget {
                   return _YellowIconButton(
                     icon: Icons.thumb_up_alt_rounded,
                     isActive: active,
-                    onTap:
-                        onToggleFavorite, // toggleFavorite оновить stream і кнопка перемалюється
+                    onTap: onToggleFavorite,
                   );
                 },
               ),
               const SizedBox(width: 12),
-
-              // квадратна "шер"
               _YellowIconButton(icon: Icons.share_rounded, onTap: onShare),
             ],
           ),
@@ -284,17 +293,10 @@ class _YellowPrimaryButton extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(radius),
           child: Ink(
-            height: 47, // ~як на макеті
+            height: 47,
             decoration: BoxDecoration(
               color: const Color(0xFFE0BC46),
               borderRadius: BorderRadius.circular(radius),
-              boxShadow: [
-                // BoxShadow(
-                //   color: Colors.black.withValues(alpha: 0.35),
-                //   blurRadius: 24,
-                //   offset: const Offset(0, 12),
-                // ),
-              ],
             ),
             child: Center(
               child: Text(
@@ -316,7 +318,7 @@ class _YellowPrimaryButton extends StatelessWidget {
 class _YellowIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
-  final bool isActive; // 👈 додали прапорець
+  final bool isActive;
 
   const _YellowIconButton({
     required this.icon,
@@ -338,23 +340,154 @@ class _YellowIconButton extends StatelessWidget {
           width: side,
           height: 47,
           decoration: BoxDecoration(
-            color:
-                isActive
-                    ? Colors
-                        .white // 👈 якщо збережено → біла
-                    : const Color(0xFFE0BC46), // інакше жовта
+            color: isActive ? Colors.white : const Color(0xFFE0BC46),
             borderRadius: BorderRadius.circular(radius),
-            boxShadow: [
-              // BoxShadow(
-              //   color: Colors.black.withValues(alpha: 0.44),
-              //   blurRadius: 16,
-              //   offset: const Offset(0, 7),
-              // ),
-            ],
           ),
           child: Center(child: Icon(icon, color: Colors.black87, size: 22)),
         ),
       ),
     );
   }
+}
+
+/// ===================================================================
+/// Допоміжні утиліти для шерингу
+/// ===================================================================
+
+String _buildShareText(Place p) {
+  final latOk = p.lat.isFinite;
+  final lngOk = p.lng.isFinite;
+  final mapUrl =
+      (latOk && lngOk) ? 'https://maps.google.com/?q=${p.lat},${p.lng}' : '';
+  final fact =
+      (p.fact == null || p.fact!.trim().isEmpty) ? '' : '\n\nFact: ${p.fact}';
+  final mapLine = mapUrl.isEmpty ? '' : '\n\nLocation: $mapUrl';
+  return '${p.name}\n\n${p.description}$fact$mapLine';
+}
+
+class _ShareTarget {
+  final String name;
+  final IconData icon;
+  final Uri Function() uriBuilder;
+  const _ShareTarget({
+    required this.name,
+    required this.icon,
+    required this.uriBuilder,
+  });
+}
+
+Future<bool> _shareTextAndroidCustomSheet(
+  BuildContext context, {
+  required String subject,
+  required String body,
+}) async {
+  if (!Platform.isAndroid) return false;
+
+  final targets = <_ShareTarget>[
+    _ShareTarget(
+      name: 'Telegram',
+      icon: Icons.telegram,
+      uriBuilder: () => Uri.parse('tg://msg?text=${Uri.encodeComponent(body)}'),
+    ),
+    _ShareTarget(
+      name: 'WhatsApp',
+      icon: Icons.chat,
+      uriBuilder:
+          () => Uri.parse('whatsapp://send?text=${Uri.encodeComponent(body)}'),
+    ),
+    _ShareTarget(
+      name: 'Viber',
+      icon: Icons.sms,
+      uriBuilder:
+          () => Uri.parse('viber://forward?text=${Uri.encodeComponent(body)}'),
+    ),
+    _ShareTarget(
+      name: 'Gmail',
+      icon: Icons.email,
+      uriBuilder:
+          () => Uri.parse(
+            'mailto:?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}',
+          ),
+    ),
+    _ShareTarget(
+      name: 'SMS',
+      icon: Icons.sms_outlined,
+      uriBuilder: () => Uri.parse('sms:?body=${Uri.encodeComponent(body)}'),
+    ),
+  ];
+
+  // лишаємо тільки встановлені
+  final available = <_ShareTarget>[];
+  for (final t in targets) {
+    if (await canLaunchUrl(t.uriBuilder())) {
+      available.add(t);
+    }
+  }
+  if (available.isEmpty) return false;
+
+  // показуємо простий sheet
+  // ignore: use_build_context_synchronously
+  await showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.black87,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (ctx) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Поділитися через',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final t in available)
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        await launchUrl(
+                          t.uriBuilder(),
+                          mode: LaunchMode.externalApplication,
+                        );
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(ctx).maybePop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white10,
+                        foregroundColor: Colors.white,
+                      ),
+                      icon: Icon(t.icon),
+                      label: Text(t.name),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+
+  return true;
 }

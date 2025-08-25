@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:chatau/core/di/di.dart';
 import 'package:chatau/shared/domain/models/place.dart';
 import 'package:chatau/shared/domain/repositories/places_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailsFullScreen extends StatelessWidget {
   final Place place;
@@ -14,14 +19,54 @@ class DetailsFullScreen extends StatelessWidget {
       child: DetailsCard(
         place: place,
         onToggleFavorite: () => sl<PlacesRepository>().toggleFavorite(place.id),
-        onShare: () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Share tapped')));
+        onShare: () async {
+          final text = _buildShareText(place).trim();
+          if (text.isEmpty) return;
+
+          if (Platform.isAndroid) {
+            // ANDROID: кастомний лист — оминаємо системний Chooser
+            final handled = await _shareTextAndroidCustomSheet(
+              context,
+              subject: place.name,
+              body: text,
+            );
+
+            if (!handled) {
+              // fallback — скопіюємо текст, щоб юзер не втратив
+              await Clipboard.setData(ClipboardData(text: text));
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Немає доступних застосунків. Текст скопійовано.',
+                    ),
+                  ),
+                );
+              }
+            }
+          } else {
+            // iOS: нативний шерінг OK
+            final subject =
+                place.name.length > 120
+                    ? place.name.substring(0, 120)
+                    : place.name;
+            await Share.share(text, subject: subject);
+          }
         },
       ),
     );
   }
+}
+
+String _buildShareText(Place p) {
+  final latOk = p.lat.isFinite;
+  final lngOk = p.lng.isFinite;
+  final mapUrl =
+      (latOk && lngOk) ? 'https://maps.google.com/?q=${p.lat},${p.lng}' : '';
+  final fact =
+      (p.fact == null || p.fact!.trim().isEmpty) ? '' : '\n\nFact: ${p.fact}';
+  final mapLine = mapUrl.isEmpty ? '' : '\n\nLocation: $mapUrl';
+  return '${p.name}\n\n${p.description}$fact$mapLine';
 }
 
 class DetailsCard extends StatelessWidget {
@@ -158,7 +203,6 @@ class DetailsCard extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.topLeft,
                                     child: SingleChildScrollView(
-                                      // 👈 додали
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Text(
                                         place.description,
@@ -176,7 +220,6 @@ class DetailsCard extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.topLeft,
                                     child: SingleChildScrollView(
-                                      // 👈 додали
                                       padding: const EdgeInsets.only(right: 8),
                                       child: Text(
                                         place.fact ?? '',
@@ -266,11 +309,137 @@ class _YellowIconButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: isActive ? Colors.white : const Color(0xFFE0BC46),
             borderRadius: BorderRadius.circular(radius),
-            boxShadow: [],
           ),
           child: Center(child: Icon(icon, color: Colors.black87, size: 22)),
         ),
       ),
     );
   }
+}
+
+/// ===== КАСТОМНИЙ ШЕРИНГ ДЛЯ ANDROID (оминаємо системний Chooser) =====
+
+class _ShareTarget {
+  final String name;
+  final IconData icon;
+  final Uri Function() uriBuilder;
+  const _ShareTarget({
+    required this.name,
+    required this.icon,
+    required this.uriBuilder,
+  });
+}
+
+Future<bool> _shareTextAndroidCustomSheet(
+  BuildContext context, {
+  required String subject,
+  required String body,
+}) async {
+  if (!Platform.isAndroid) return false;
+
+  final List<_ShareTarget> targets = [
+    _ShareTarget(
+      name: 'Telegram',
+      icon: Icons.telegram,
+      uriBuilder: () => Uri.parse('tg://msg?text=${Uri.encodeComponent(body)}'),
+    ),
+    _ShareTarget(
+      name: 'WhatsApp',
+      icon: Icons.chat,
+      uriBuilder:
+          () => Uri.parse('whatsapp://send?text=${Uri.encodeComponent(body)}'),
+    ),
+    _ShareTarget(
+      name: 'Viber',
+      icon: Icons.sms, // можна підібрати іншу іконку
+      uriBuilder:
+          () => Uri.parse('viber://forward?text=${Uri.encodeComponent(body)}'),
+    ),
+    _ShareTarget(
+      name: 'Gmail',
+      icon: Icons.email,
+      uriBuilder:
+          () => Uri.parse(
+            'mailto:?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}',
+          ),
+    ),
+    _ShareTarget(
+      name: 'SMS',
+      icon: Icons.sms_outlined,
+      uriBuilder: () => Uri.parse('sms:?body=${Uri.encodeComponent(body)}'),
+    ),
+  ];
+
+  final available = <_ShareTarget>[];
+  for (final t in targets) {
+    if (await canLaunchUrl(t.uriBuilder())) {
+      available.add(t);
+    }
+  }
+  if (available.isEmpty) return false;
+
+  // ignore: use_build_context_synchronously
+  await showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.black87,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (ctx) {
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Поділитися через',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final t in available)
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        await launchUrl(
+                          t.uriBuilder(),
+                          mode: LaunchMode.externalApplication,
+                        );
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(ctx).maybePop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white10,
+                        foregroundColor: Colors.white,
+                      ),
+                      icon: Icon(t.icon),
+                      label: Text(t.name),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+
+  return true;
 }

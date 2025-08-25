@@ -17,7 +17,7 @@ class InviteTab extends StatelessWidget {
 
   Future<void> _share() async {
     await Share.share(
-      'Try CHÂTEAU — stories, places & wine guide! $_shareLink',
+      'Try CHÂTEAU — stories, places & wine guide!', //$_shareLink
     );
   }
 
