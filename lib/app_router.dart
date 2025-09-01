@@ -36,11 +36,11 @@ final GoRouter appRouter = GoRouter(
           (ctx, st) =>
               _fade(const OnboardingPage(), key: const ValueKey('onboarding')),
     ),
-    GoRoute(
-      path: '/home',
-      pageBuilder:
-          (ctx, st) => _fade(const HomePage(), key: const ValueKey('home')),
-    ),
+    // GoRoute(
+    //   path: '/home',
+    //   pageBuilder:
+    //       (ctx, st) => _fade(const HomePage(), key: const ValueKey('home')),
+    // ),
   ],
 
   /// Глобальний редірект: якщо онбординг ще не пройдений — ведемо на /onboarding (крім самих /splash та /onboarding)

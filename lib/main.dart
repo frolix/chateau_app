@@ -24,6 +24,7 @@ class ChatauApp extends StatelessWidget {
       title: 'chatau',
       theme: ThemeData(useMaterial3: true, fontFamily: 'Montserrat'),
       routerConfig: appRouter,
+      debugShowCheckedModeBanner: false,
 
       // 🔽 локалізація
       localizationsDelegates: const [

@@ -57,12 +57,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
       );
     } else {
       _isFinishing = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        throw StateError('CRASH: onboarding -> /home');
+      });
       try {
         // останній слайд: зберігаємо прапорець і йдемо на home
         await _completeOnboarding(); // ТУТ вже ставиться onboarding_complete і OnboardingState.seen
         if (!mounted) return;
         context.go('/home');
+        // 👇 інтенційний краш ПІСЛЯ навігації (тільки в debug)
+        // if (kDebugMode) {
+
+        // }
       } finally {
+        // 👇 інтенційний краш ПІСЛЯ навігації (тільки в debug)
+        // if (kDebugMode) {
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   throw StateError('CRASH: onboarding -> /home');
+        // });
+        // }
         _isFinishing = false;
       }
     }

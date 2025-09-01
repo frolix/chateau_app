@@ -1,3 +1,5 @@
+import 'package:chatau/core/di/di.dart';
+import 'package:chatau/shared/domain/services/place_photos_service.dart';
 import 'package:flutter/material.dart';
 import 'package:chatau/shared/domain/models/place.dart';
 // sl<...>()

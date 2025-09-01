@@ -1,3 +1,6 @@
+import 'package:chatau/shared/data/repositories/place_photos_repository_hive.dart';
+import 'package:chatau/shared/domain/repositories/photos_repository.dart';
+import 'package:chatau/shared/domain/services/place_photos_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 
@@ -23,6 +26,13 @@ Future<void> setupDI() async {
   final placesBox = Hive.box<PlaceEntity>(Boxes.places);
   final stateBox = Hive.box<UserPlaceState>(Boxes.placeState);
   final factsBox = Hive.box<FactEntity>(Boxes.facts);
+  // final photosBox = Hive.box<PlacePhotoEntity>(
+  //   Boxes.photos,
+  // ); // 👈 якщо конструкторам треба
+
+  if (!sl.isRegistered<PlacePhotosService>()) {
+    sl.registerLazySingleton<PlacePhotosService>(() => PlacePhotosService());
+  }
 
   // Places
   if (!sl.isRegistered<PlacesRepository>()) {
@@ -35,6 +45,13 @@ Future<void> setupDI() async {
   if (!sl.isRegistered<FactsRepository>()) {
     sl.registerLazySingleton<FactsRepository>(
       () => FactsRepositoryHive(factsBox: factsBox),
+    );
+  }
+
+  // Photos
+  if (!sl.isRegistered<PhotosRepository>()) {
+    sl.registerLazySingleton<PhotosRepository>(
+      () => PlacePhotosRepositoryHive(),
     );
   }
 

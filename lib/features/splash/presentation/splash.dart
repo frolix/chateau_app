@@ -46,6 +46,7 @@ class _SplashPageState extends State<SplashPage> {
       if (!mounted) return;
       context.go(
         effectiveSeen ? '/home' : '/onboarding',
+        // effectiveSeen ? '/home' : '/onboarding',
       ); // ⚠️ використовуй effectiveSeen
     } catch (_) {
       if (!mounted) return;

@@ -71,7 +71,7 @@ class GuideFactsCard extends StatelessWidget {
                   'I have prepared fascinating stories about wine and regions for you.',
                   textAlign: TextAlign.right,
                   softWrap: true,
-                  maxLines: 3,
+                  maxLines: 4,
                   overflow: TextOverflow.clip,
                   style: const TextStyle(
                     fontFamily: 'Montserrat',

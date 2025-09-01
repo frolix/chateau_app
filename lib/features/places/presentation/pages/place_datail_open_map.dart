@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chatau/core/di/di.dart';
 import 'package:chatau/shared/domain/models/place.dart';
 import 'package:chatau/shared/domain/repositories/places_repository.dart';
+import 'package:chatau/shared/domain/services/place_photos_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
@@ -266,6 +267,17 @@ class DetailsCard extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               _YellowIconButton(icon: Icons.share_rounded, onTap: onShare),
+              const SizedBox(width: 12),
+
+              _YellowIconButton(
+                icon: Icons.photo_camera,
+                onTap: () async {
+                  await sl<PlacePhotosService>().captureForPlace(place.id);
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Photo saved!')));
+                },
+              ),
             ],
           ),
         ],

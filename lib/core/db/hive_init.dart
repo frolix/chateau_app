@@ -1,4 +1,5 @@
 import 'package:chatau/core/db/adapters/fact_entity.dart';
+import 'package:chatau/core/db/adapters/place_photo_entity.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'boxes.dart';
 import 'adapters/place_entity.dart';
@@ -18,6 +19,10 @@ Future<void> initHive() async {
     Hive.registerAdapter(FactEntityAdapter());
   }
 
+  if (!Hive.isAdapterRegistered(HiveTypeIds.photosEntity)) {
+    Hive.registerAdapter(PlacePhotoEntityAdapter());
+  }
+
   if (!Hive.isBoxOpen(Boxes.places)) {
     await Hive.openBox<PlaceEntity>(Boxes.places);
   }
@@ -28,5 +33,9 @@ Future<void> initHive() async {
 
   if (!Hive.isBoxOpen(Boxes.facts)) {
     await Hive.openBox<FactEntity>(Boxes.facts);
+  }
+
+  if (!Hive.isBoxOpen(Boxes.photos)) {
+    await Hive.openBox<PlacePhotoEntity>(Boxes.photos);
   }
 }
